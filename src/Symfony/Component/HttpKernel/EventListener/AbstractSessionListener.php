@@ -138,13 +138,14 @@ abstract class AbstractSessionListener implements EventSubscriberInterface, Rese
              * For supporting sessions in php runtime with runners like roadrunner or swoole the session
              * cookie need to be written on the response object and should not be written by PHP itself.
              */
+            $phpSessionCookieOptions = session_get_cookie_params();
             $sessionName = $session->getName();
             $sessionId = $session->getId();
-            $sessionCookiePath = $this->sessionOptions['cookie_path'] ?? '/';
-            $sessionCookieDomain = $this->sessionOptions['cookie_domain'] ?? null;
-            $sessionCookieSecure = $this->sessionOptions['cookie_secure'] ?? false;
-            $sessionCookieHttpOnly = $this->sessionOptions['cookie_httponly'] ?? true;
-            $sessionCookieSameSite = $this->sessionOptions['cookie_samesite'] ?? Cookie::SAMESITE_LAX;
+            $sessionCookiePath = $this->sessionOptions['cookie_path'] ?? $phpSessionCookieOptions['path'] ?? '/';
+            $sessionCookieDomain = $this->sessionOptions['cookie_domain'] ?? $phpSessionCookieOptions['domain'] ?? null;
+            $sessionCookieSecure = $this->sessionOptions['cookie_secure'] ?? $phpSessionCookieOptions['secure'] ?? false;
+            $sessionCookieHttpOnly = $this->sessionOptions['cookie_httponly'] ?? $phpSessionCookieOptions['httponly'] ?? true;
+            $sessionCookieSameSite = $this->sessionOptions['cookie_samesite'] ?? $phpSessionCookieOptions['samesite'] ?? Cookie::SAMESITE_LAX;
 
             SessionUtils::popSessionCookie($sessionName, $sessionId);
 
